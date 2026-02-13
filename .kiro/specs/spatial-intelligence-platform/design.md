@@ -116,30 +116,22 @@ External APIs:
 
 ### 3. Data Flow
 
-**Scenario 1: Map Visualization**
+**Core Flow Pattern:**
 ```
-User loads page
-  → Frontend requests dataset list
-    → Backend returns available datasets
-      → User selects "AQI"
-        → Frontend requests AQI data
-          → Backend loads aqi-data.json
-            → Frontend renders heatmap with deck.gl
-              → User hovers over point
-                → Tooltip shows value
+User Action → Frontend → Backend → External APIs → Backend → Frontend → Display
 ```
 
-**Scenario 2: Region Analysis**
-```
-User draws polygon on map
-  → Frontend captures polygon coordinates
-    → POST /api/analyze-region with bounds
-      → Backend filters points within polygon
-        → Calculate avg, min, max
-   e
-                → Return text response
-                  → Frontend displays + optional TTS
-```
+**Key Data Flows:**
+
+1. **Initial Load**: Browser → GET /api/datasets → JSON files → Heatmap rendering
+2. **Region Analysis**: Polygon draw → POST /api/analyze-region → Point filtering + stats → POST /api/ai-explain → OpenAI → Insight display
+3. **Voice Query**: Speech API → Text → POST /api/voice-query → Query parsing + data fetch → OpenAI → Response display
+
+**Component Interactions:**
+- Frontend components communicate via React state/props
+- Backend services are synchronous (no message queues)
+- OpenAI calls are async with timeout handling
+- Static data is cached in memory on backend startup
 
 ### 4. MVP Feature Prioritization
 
